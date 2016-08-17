@@ -16,3 +16,7 @@ EasySCP uses sshpass and scp behind the scene, so:
 ### Compilation
 
 We use QMake.
+
+### Todos
+
+Select a directory to upload (-r option of ssh)
