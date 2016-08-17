@@ -10,7 +10,8 @@ Following librairies are needed:
 * -lboost_filesystem 
 * -lboost_system
 
-Also need boost/process, which is not yet an official boost librarie. To install it: http://www.highscore.de/boost/process/
+EasySCP uses sshpass and scp behind the scene, so:
+* sudo apt-get install scp sshpass
 
 ### Compilation
 
