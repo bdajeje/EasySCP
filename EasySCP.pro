@@ -30,31 +30,6 @@ HEADERS  += main_window.hpp \
     utils/settings.hpp \
     utils/fonts.hpp \
     worker/scp_worker.hpp \
-    utils/scp.hpp \
-    utils/boost/process/detail/file_handle.hpp \
-    utils/boost/process/detail/pipe.hpp \
-    utils/boost/process/detail/posix_ops.hpp \
-    utils/boost/process/detail/stream_info.hpp \
-    utils/boost/process/detail/systembuf.hpp \
-    utils/boost/process/detail/win32_ops.hpp \
-    utils/boost/process/child.hpp \
-    utils/boost/process/config.hpp \
-    utils/boost/process/context.hpp \
-    utils/boost/process/environment.hpp \
-    utils/boost/process/operations.hpp \
-    utils/boost/process/pistream.hpp \
-    utils/boost/process/posix_child.hpp \
-    utils/boost/process/posix_context.hpp \
-    utils/boost/process/posix_operations.hpp \
-    utils/boost/process/posix_status.hpp \
-    utils/boost/process/postream.hpp \
-    utils/boost/process/process.hpp \
-    utils/boost/process/self.hpp \
-    utils/boost/process/status.hpp \
-    utils/boost/process/stream_behavior.hpp \
-    utils/boost/process/win32_child.hpp \
-    utils/boost/process/win32_context.hpp \
-    utils/boost/process/win32_operations.hpp \
-    utils/boost/process.hpp
+    utils/scp.hpp
 
 LIBS += -lboost_filesystem -lboost_system

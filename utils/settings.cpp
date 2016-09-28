@@ -10,12 +10,14 @@ const std::string Settings::key_notify_me {"notify_me"};
 const std::string Settings::key_target_username {"target_username"};
 const std::string Settings::key_target_address {"target_address"};
 const std::string Settings::key_target_path {"target_destination"};
+const std::string Settings::key_tranfert_limit {"tranfert_limit"};
 
-const std::array<std::string, 4> Settings::SettingKeys {
+const std::array<std::string, 5> Settings::SettingKeys {
   Settings::key_notify_me,
   Settings::key_target_username,
   Settings::key_target_address,
-  Settings::key_target_path
+  Settings::key_target_path,
+  Settings::key_tranfert_limit
 };
 
 Settings::Settings(const QString& filepath)

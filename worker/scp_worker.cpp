@@ -1,88 +1,52 @@
 #include "scp_worker.hpp"
 
-// \todo: remove those two lines
-#include <thread>
-#include <iostream>
-
 namespace worker {
 
-SCPWorker::SCPWorker(QObject* parent, const QString& filepath, const QString& full_target, const QString& password)
+SCPWorker::SCPWorker(QObject* parent, const QString& filepath, const QString& full_target, const QString& password, uint limit)
   : QThread(parent)
   , _filepath {filepath}
   , _full_target {full_target}
   , _password {password}  
+  , _limit {limit}
 {}
-
-SCPWorker::~SCPWorker()
-{
-	if(_process)
-		delete _process;
-}
 
 void SCPWorker::run()
 {
-	std::cout << "START SCPWorker" << std::endl;
-	emit startProcess();
+  QString program = "sshpass";
+  QStringList arguments;
+  arguments<< "-p" << _password << "/usr/bin/scp";
 
-//  namespace bp = ::boost::process;
+  // Set limit if needed
+  if(_limit > 0)
+    arguments << "-l" << QString(_limit);
 
-//  std::string exec = "echo nani";
+  arguments << _filepath << _full_target;
 
-//  std::vector<std::string> args;
-//  args.push_back("--version");
+  _process.reset(new QProcess);
 
-//  bp::context ctx;
-//  ctx.stdout_behavior = bp::capture_stream();
+  connect(_process.get(), SIGNAL(readyReadStandardOutput()), this, SLOT(readProcessOutput()));
+  connect(_process.get(), SIGNAL(readyReadStandardError()), this, SLOT(readProcessError()));
+  connect(_process.get(), SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 
-//  bp::child child_process = bp::launch(exec, args, ctx);
-
-//  bp::pistream &is = child_process.get_stdout();
-//  std::string line;
-//  while(std::getline(is, line))
-//    std::cout << line << std::endl;
-
-//  emit progress(10);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(20);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(30);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(40);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(60);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(80);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-//  emit progress(90);
-//  std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-//  emit finished();
+  _process->start(program, arguments);
+  _process->waitForFinished();
 }
 
-void SCPWorker::startProcess()
+void SCPWorker::stop()
 {
-	QString program = "echo";
-	QStringList arguments;
-	arguments << "nani";
-
-	if(_process)
-	{
-		delete _process;
-		_process = nullptr;
-	}
-
-	_process = new QProcess;
-
-	connect(_process, SIGNAL(readyRead()), this, SLOT(readProcessOutput()));
-	connect(_process, SIGNAL(finished(int)), this, SIGNAL(finished(int)));
-
-	_process->start(program, arguments);
+  _process->terminate();
 }
 
 void SCPWorker::readProcessOutput()
 {
-	QByteArray output = _process->readAll();
-	std::cout << output.toStdString() << std::endl;
+  QString read = _process->readAllStandardOutput();
+  emit output(read);
+}
+
+void SCPWorker::readProcessError()
+{
+  QString read = _process->readAllStandardError();
+  emit error(read);
 }
 
 }

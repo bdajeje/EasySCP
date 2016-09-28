@@ -1,4 +1,5 @@
 notify_me=yes
 target_username=jeje
-target_address=192.168.1.106
-target_destination=~/Desktop
+target_address=localhost
+target_destination=~/Desktop/nana
+tranfert_limit=0

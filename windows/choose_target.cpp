@@ -29,6 +29,9 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   _password_field->setEchoMode(QLineEdit::Password);
   _password_field->setPlaceholderText("Enter password");
 
+  _transfert_limit = new QSpinBox;
+  _transfert_limit->setPrefix("Speed limit Kb/s: ");
+
   QPushButton* previous_button = new QPushButton("Previous");
   _start_button = new QPushButton("Transfert");
 
@@ -36,7 +39,7 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   button_layout->addWidget(previous_button);
   button_layout->addWidget(_start_button);
 
-  QLabel* _intro_text = new QLabel("Choose a target");
+  QLabel* _intro_text = new QLabel("Receiver information");
   _intro_text->setAlignment(Qt::AlignCenter);
   _intro_text->setFont(utils::font::Title);
 
@@ -46,6 +49,7 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   layout->addWidget(_target_address);
   layout->addWidget(_target_path);
   layout->addWidget(_password_field);
+  layout->addWidget(_transfert_limit);
   layout->addLayout(button_layout);
 
   connect(previous_button, SIGNAL(pressed()),            this, SIGNAL(previousPage()));
@@ -53,22 +57,31 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   connect(_target_user,    SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
   connect(_target_address, SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
   connect(_password_field, SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
+  connect(_password_field, SIGNAL(returnPressed()),      this, SLOT(startTransfertPressed()));
 
   inputUpdated();
 }
 
+bool ChooseTarget::isValidInputs() const
+{
+  return !getTargetAddress().isEmpty() && !getTargetUserName().isEmpty() && !getTargetPassword().isEmpty();
+}
+
 void ChooseTarget::inputUpdated()
 {
-  const bool all_field_filled = !getTargetAddress().isEmpty() && !getTargetUserName().isEmpty() && !getTargetPassword().isEmpty();
-  _start_button->setDisabled(!all_field_filled);
+  _start_button->setDisabled(!isValidInputs());
 }
 
 void ChooseTarget::startTransfertPressed()
 {
+  if(!isValidInputs())
+    return;
+
   // Register input values so next time user uses the app, those values will be displayed by default
   _settings->setTargetUserName( getTargetUserName() );
   _settings->setTargetAddress( getTargetAddress() );
   _settings->setTargetPath( getTargetDestination() );
+  _settings->setTransfertLimit( _transfert_limit->value() );
   _settings->save();
 
   // Start transfert

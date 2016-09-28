@@ -31,6 +31,7 @@ MainWindow::MainWindow(const QIcon& icon, QWidget *parent)
   connect(_w_choose_file, SIGNAL(fileSelected(QString)), this, SLOT(filepathSelected(QString)));
   connect(_w_choose_target, SIGNAL(previousPage()), this, SLOT(showChooseFile()));
   connect(_w_choose_target, SIGNAL(startTransfert()), this, SLOT(startTransfert()));
+  connect(_w_transfert_progress, SIGNAL(finished()), this, SLOT(showChooseFile()));
 
   setCentralWidget(_central_widget);
 }

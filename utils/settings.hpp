@@ -22,6 +22,7 @@ class Settings final
     void setTargetUserName(QString value) { _settings[key_target_username] = value.toStdString(); }
     void setTargetAddress(QString value) { _settings[key_target_address] = value.toStdString(); }
     void setTargetPath(QString value) { _settings[key_target_path] = value.toStdString(); }
+    void setTransfertLimit(int value) { _settings[key_tranfert_limit] = std::to_string(value); }
 
     bool save() const;
 
@@ -38,7 +39,8 @@ class Settings final
     static const std::string key_target_username;
     static const std::string key_target_address;
     static const std::string key_target_path;
-    static const std::array<std::string, 4> SettingKeys;
+    static const std::string key_tranfert_limit;
+    static const std::array<std::string, 5> SettingKeys;
 };
 
 }

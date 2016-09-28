@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QWidget>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include "utils/settings.hpp"
 
@@ -24,6 +25,10 @@ class ChooseTarget final : public QWidget
     QString getTargetDestination() const { return _target_path->text(); }
     QString getTargetPassword() const { return _password_field->text(); }
 
+  private:
+
+    bool isValidInputs() const;
+
   signals:
 
     void previousPage();
@@ -40,6 +45,7 @@ class ChooseTarget final : public QWidget
     QLineEdit* _target_address;
     QLineEdit* _target_path;
     QLineEdit* _password_field;
+    QSpinBox* _transfert_limit;
     QPushButton* _start_button;
     std::shared_ptr<utils::Settings> _settings;
 };

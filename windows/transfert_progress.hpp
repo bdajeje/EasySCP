@@ -3,8 +3,10 @@
 
 #include <memory>
 
+#include <QLabel>
 #include <QMainWindow>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QWidget>
 #include <QCheckBox>
 #include <QSystemTrayIcon>
@@ -27,8 +29,19 @@ class TransfertProgress final : public QWidget
 
   public slots:
 
-    void transfertFinished();
+    void transfertFinished(int return_code);
     void transfertProgress(unsigned short percentage);
+    void readProgressOutput(QString);
+    void readProgressError(QString);
+
+  private slots:
+
+    void cancelPressed();
+    void notifyCheckUpdate();
+
+  signals:
+
+    void finished();
 
   private:
 
@@ -36,9 +49,14 @@ class TransfertProgress final : public QWidget
     QSystemTrayIcon* _system_tray;
     QProgressBar* _progress_bar;
     QCheckBox* _notify_checkbox;
+    QPushButton* _cancel_button;
+    QLabel* _status_text;
     QString _filepath;
-
+    QString _error_msg;
+    QString _output_msg;    
     std::unique_ptr<worker::SCPWorker> _scp_worker;
+    bool _finished;
+    bool _force_stop {false};
 };
 
 }
