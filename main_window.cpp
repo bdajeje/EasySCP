@@ -1,10 +1,16 @@
 #include "main_window.hpp"
 
+#include <QApplication>
+#include <QMessageBox>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(const QIcon& icon, QWidget *parent)
   : QMainWindow{parent}
 {
+  // First validate requirements
+  hasCommand("scp");
+  hasCommand("sshpass");
+
   // Central widget - will contains all other views
   _central_widget = new QWidget(this);
   QVBoxLayout* layout = new QVBoxLayout(_central_widget);
@@ -41,6 +47,26 @@ MainWindow::~MainWindow()
   delete _w_choose_file;
   delete _w_choose_target;
   delete _w_transfert_progress;
+}
+
+void MainWindow::hasCommand(const QString& cmd)
+{
+  const QString program = "whereis";
+  QStringList arguments;
+  arguments << cmd;
+
+  QProcess process;
+  process.start(program, arguments);
+  process.waitForFinished();
+
+  QString output = process.readAllStandardOutput();
+  // whereis produces output like: [cmd_name]: [cmd_paths]
+  // So if there is not cmd_paths it means the program is not installed
+  if(output.length() <= cmd.length() + 2)
+  {
+    QMessageBox::warning(this, tr("Error"), tr("This program needs '%1'' to run, please install it before using EasySCP.").arg(cmd));
+    exit(EXIT_FAILURE);
+  }
 }
 
 void MainWindow::filepathSelected(QString filepath)

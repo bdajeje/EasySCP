@@ -12,7 +12,7 @@ SCPWorker::SCPWorker(QObject* parent, const QString& filepath, const QString& fu
 
 void SCPWorker::run()
 {
-  QString program = "sshpass";
+  const QString program = "sshpass";
   QStringList arguments;
   arguments<< "-p" << _password << "/usr/bin/scp";
 

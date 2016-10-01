@@ -22,6 +22,10 @@ class MainWindow final : public QMainWindow
 
     QSystemTrayIcon* systemTray() { return _system_tray_icon; }
 
+  private:
+
+    void hasCommand(const QString& cmd);
+
   private slots:
 
     void filepathSelected(QString filepath);
