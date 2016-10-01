@@ -12,15 +12,15 @@
 namespace window {
 
 ChooseFile::ChooseFile()
-{  
+{
   QVBoxLayout* layout = new QVBoxLayout(this);
 
-  QPushButton* browse_button = new QPushButton("Browse");
+  QPushButton* browse_button = new QPushButton(tr("Browse"));
   connect(browse_button, SIGNAL(clicked(bool)), this, SLOT(selectFile()));
 
-  QLabel* text_1 = new QLabel("Drag and Drop");
-  QLabel* text_2 = new QLabel("a file to send");
-  QLabel* text_3 = new QLabel("or");
+  QLabel* text_1 = new QLabel(tr("Drag and Drop"));
+  QLabel* text_2 = new QLabel(tr("a file to send"));
+  QLabel* text_3 = new QLabel(tr("or"));
 
   text_1->setAlignment(Qt::AlignCenter);
   text_2->setAlignment(Qt::AlignCenter);
@@ -40,7 +40,11 @@ ChooseFile::ChooseFile()
 
 void ChooseFile::selectFile()
 {
-  emit fileSelected( QFileDialog::getOpenFileName(this, "Select a file") );
+  QString file_name = QFileDialog::getOpenFileName(this, tr("Select a file"));
+  if(file_name.isEmpty())
+    return;
+
+  emit fileSelected(file_name);
 }
 
 void ChooseFile::dragEnterEvent(QDragEnterEvent *event)

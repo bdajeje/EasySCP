@@ -14,32 +14,32 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   : _settings {settings}
 {
   _target_user = new QLineEdit;
-  _target_user->setPlaceholderText("User name");
+  _target_user->setPlaceholderText(tr("User name"));
   _target_user->setText(settings->getTargetUserName().c_str());
 
   _target_address = new QLineEdit;
-  _target_address->setPlaceholderText("IP or Computer name");
+  _target_address->setPlaceholderText(tr("IP or Computer name"));
   _target_address->setText(settings->getTargetAddress().c_str());
 
   _target_path = new QLineEdit;
-  _target_path->setPlaceholderText("Path");
+  _target_path->setPlaceholderText(tr("Path"));
   _target_path->setText(settings->getTargetPath().c_str());
 
   _password_field = new QLineEdit;
   _password_field->setEchoMode(QLineEdit::Password);
-  _password_field->setPlaceholderText("Enter password");
+  _password_field->setPlaceholderText(tr("Enter password"));
 
   _transfert_limit = new QSpinBox;
-  _transfert_limit->setPrefix("Speed limit Kb/s: ");
+  _transfert_limit->setPrefix(tr("Speed limit Kb/s: "));
 
-  QPushButton* previous_button = new QPushButton("Previous");
-  _start_button = new QPushButton("Transfert");
+  QPushButton* previous_button = new QPushButton(tr("Previous"));
+  _start_button = new QPushButton(tr("Transfert"));
 
   QHBoxLayout* button_layout = new QHBoxLayout;
   button_layout->addWidget(previous_button);
   button_layout->addWidget(_start_button);
 
-  QLabel* _intro_text = new QLabel("Receiver information");
+  QLabel* _intro_text = new QLabel(tr("Receiver information"));
   _intro_text->setAlignment(Qt::AlignCenter);
   _intro_text->setFont(utils::font::Title);
 
