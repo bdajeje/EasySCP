@@ -11,7 +11,8 @@
 
 namespace window {
 
-ChooseFile::ChooseFile()
+ChooseFile::ChooseFile(std::shared_ptr<utils::Settings>& settings)
+  : _settings {settings}
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -40,11 +41,13 @@ ChooseFile::ChooseFile()
 
 void ChooseFile::selectFile()
 {
-  QString file_name = QFileDialog::getOpenFileName(this, tr("Select a file"));
-  if(file_name.isEmpty())
+  QUrl file_url = QFileDialog::getOpenFileUrl(this, tr("Select a file"), QString{_settings->getLastFileDir().c_str()});
+  if(file_url.isEmpty())
     return;
 
-  emit fileSelected(file_name);
+  _settings->setLastFileDir(file_url.path());
+
+  emit fileSelected(file_url.fileName());
 }
 
 void ChooseFile::dragEnterEvent(QDragEnterEvent *event)

@@ -1,5 +1,6 @@
 notify_me=yes
-target_username=jeje
-target_address=localhost
-target_destination=~/Desktop/nana
+target_username=toto
+target_address=10.10.10.10
+target_destination=~/Desktop/test
 tranfert_limit=0
+last_file_dir=/home/jeje/Desktop

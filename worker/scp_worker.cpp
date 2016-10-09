@@ -2,19 +2,20 @@
 
 namespace worker {
 
-SCPWorker::SCPWorker(QObject* parent, const QString& filepath, const QString& full_target, const QString& password, uint limit)
+SCPWorker::SCPWorker(QObject* parent, const QString& scp_path, const QString& sshpass_path, const QString& filepath, const QString& full_target, const QString& password, uint limit)
   : QThread(parent)
   , _filepath {filepath}
   , _full_target {full_target}
-  , _password {password}  
+  , _password {password}
   , _limit {limit}
+  , _scp_path {scp_path}
+  , _sshpass_path {sshpass_path}
 {}
 
 void SCPWorker::run()
 {
-  const QString program = "sshpass";
   QStringList arguments;
-  arguments<< "-p" << _password << "/usr/bin/scp";
+  arguments<< "-p" << _password << _scp_path;
 
   // Set limit if needed
   if(_limit > 0)
@@ -28,7 +29,7 @@ void SCPWorker::run()
   connect(_process.get(), SIGNAL(readyReadStandardError()), this, SLOT(readProcessError()));
   connect(_process.get(), SIGNAL(finished(int)), this, SIGNAL(finished(int)));
 
-  _process->start(program, arguments);
+  _process->start(_sshpass_path, arguments);
   _process->waitForFinished();
 }
 

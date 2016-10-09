@@ -14,7 +14,8 @@ class SCPWorker final : public QThread
 
   public:
 
-    SCPWorker(QObject* parent, const QString& filepath, const QString& full_target, const QString& password, uint limit = 0);
+    SCPWorker(QObject* parent, const QString& scp_path, const QString& sshpass_path,
+              const QString& filepath, const QString& full_target, const QString& password, uint limit = 0);
 
     void run() Q_DECL_OVERRIDE;
     void stop();
@@ -36,8 +37,10 @@ class SCPWorker final : public QThread
     QString _filepath;
     QString _full_target;
     QString _password;
-    std::unique_ptr<QProcess> _process;
     uint _limit;
+    QString _scp_path;
+    QString _sshpass_path;
+    std::unique_ptr<QProcess> _process;
 };
 
 }

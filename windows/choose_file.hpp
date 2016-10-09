@@ -1,8 +1,12 @@
 #ifndef CHOOSEFILE_HPP
 #define CHOOSEFILE_HPP
 
+#include <memory>
+
 #include <QWidget>
 #include <QPushButton>
+
+#include "utils/settings.hpp"
 
 namespace window {
 
@@ -12,7 +16,7 @@ class ChooseFile final : public QWidget
 
   public:
 
-    ChooseFile();
+    ChooseFile(std::shared_ptr<utils::Settings>& settings);
 
   private:
 
@@ -26,6 +30,10 @@ class ChooseFile final : public QWidget
   signals:
 
     void fileSelected(QString filepath);
+
+  private:
+
+    std::shared_ptr<utils::Settings> _settings;
 };
 
 }

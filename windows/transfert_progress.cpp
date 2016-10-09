@@ -13,6 +13,8 @@ namespace window {
 TransfertProgress::TransfertProgress(std::shared_ptr<utils::Settings>& settings, QSystemTrayIcon* system_tray)
   : _settings{settings}
   , _system_tray{system_tray}
+  , _scp_path {findCommand("scp")}
+  , _sshpass_path {findCommand("sshpass")}
 {
   QVBoxLayout* layout = new QVBoxLayout(this);
   _status_text = new QLabel(tr("Tranfering"));
@@ -51,6 +53,30 @@ TransfertProgress::~TransfertProgress()
   }
 }
 
+QString TransfertProgress::findCommand(const QString& cmd)
+{
+  const QString program = "whereis";
+  QStringList arguments;
+  arguments << cmd;
+
+  QProcess process;
+  process.start(program, arguments);
+  process.waitForFinished();
+
+  const QString output = process.readAllStandardOutput();
+
+  // whereis produces output like: [cmd_name]: [cmd_paths]
+  // So if there is not cmd_paths it means the program is not installed
+  const int cmd_path_start_pos = cmd.length() + 2;
+  if(output.length() <= cmd_path_start_pos)
+  {
+    QMessageBox::warning(this, tr("Error"), tr("This program needs '%1'' to run, please install it before using EasySCP.").arg(cmd));
+    exit(EXIT_FAILURE);
+  }
+
+  return output.mid(cmd_path_start_pos, output.indexOf(" ", cmd_path_start_pos) - cmd_path_start_pos);
+}
+
 void TransfertProgress::notifyCheckUpdate()
 {
   // Save settings
@@ -72,7 +98,7 @@ void TransfertProgress::start(const QString& filepath, const QString& target_use
   _error_msg.clear();
   _filepath = filepath;  
 
-  _scp_worker.reset( new worker::SCPWorker(this, filepath, utils::scp::fullAddress(target_username, target_address, target_destination), password) );
+  _scp_worker.reset( new worker::SCPWorker(this, _scp_path, _sshpass_path, filepath, utils::scp::fullAddress(target_username, target_address, target_destination), password) );
   connect(_scp_worker.get(), SIGNAL(output(QString)), this, SLOT(readProgressOutput(QString)));
   connect(_scp_worker.get(), SIGNAL(error(QString)), this, SLOT(readProgressError(QString)));
   connect(_scp_worker.get(), SIGNAL(finished(int)), this, SLOT(transfertFinished(int)));

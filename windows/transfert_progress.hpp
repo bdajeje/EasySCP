@@ -27,6 +27,10 @@ class TransfertProgress final : public QWidget
 
     void start(const QString& filepath, const QString& target_username, const QString& target_address, const QString& target_destination, const QString& password);
 
+  private:
+
+    QString findCommand(const QString& cmd);
+
   public slots:
 
     void transfertFinished(int return_code);
@@ -53,7 +57,9 @@ class TransfertProgress final : public QWidget
     QLabel* _status_text;
     QString _filepath;
     QString _error_msg;
-    QString _output_msg;    
+    QString _output_msg;
+    QString _scp_path;
+    QString _sshpass_path;
     std::unique_ptr<worker::SCPWorker> _scp_worker;
     bool _finished;
     bool _force_stop {false};

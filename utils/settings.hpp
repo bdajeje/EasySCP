@@ -17,11 +17,13 @@ class Settings final
     const std::string& getTargetUserName() const { return _settings.at(key_target_username); }
     const std::string& getTargetAddress() const { return _settings.at(key_target_address); }
     const std::string& getTargetPath() const { return _settings.at(key_target_path); }
+    const std::string& getLastFileDir() const { return _settings.at(key_last_file_dir); }
 
     void setNotifyMe(bool value) { _settings[key_notify_me] = value ? "yes" : "no"; }
     void setTargetUserName(QString value) { _settings[key_target_username] = value.toStdString(); }
     void setTargetAddress(QString value) { _settings[key_target_address] = value.toStdString(); }
     void setTargetPath(QString value) { _settings[key_target_path] = value.toStdString(); }
+    void setLastFileDir(QString value) { _settings[key_last_file_dir] = value.toStdString(); }
     void setTransfertLimit(int value) { _settings[key_tranfert_limit] = std::to_string(value); }
 
     bool save() const;
@@ -40,7 +42,8 @@ class Settings final
     static const std::string key_target_address;
     static const std::string key_target_path;
     static const std::string key_tranfert_limit;
-    static const std::array<std::string, 5> SettingKeys;
+    static const std::string key_last_file_dir;
+    static const std::array<std::string, 6> SettingKeys;
 };
 
 }
