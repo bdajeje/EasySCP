@@ -48,6 +48,7 @@ class ChooseTarget final : public QWidget
     void loadLastTargets();
     void saveToLastTargets(const QString& target_user, const QString& target_address, const QString& target_path, int speed_limit);
     void addLastTarget(const QString& target_user, const QString& target_address, const QString& target_path, int speed_limit);
+    void saveLastTargets();
 
   signals:
 
@@ -59,10 +60,12 @@ class ChooseTarget final : public QWidget
     void inputUpdated();
     void startTransfertPressed();
     void setValueFromLastTarget(QString entry_name);
+    void removeCurrentLasttarget();
 
   private:
 
     QComboBox* _last_targets_drop_down;
+    QPushButton* _remove_last_target;
     QLineEdit* _target_user;
     QLineEdit* _target_address;
     QLineEdit* _target_path;

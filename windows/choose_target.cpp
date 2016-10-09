@@ -19,6 +19,11 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   : _settings {settings}
 {
   _last_targets_drop_down = new QComboBox;
+  _remove_last_target = new QPushButton("Remove");
+  _remove_last_target->setEnabled(false);
+  QHBoxLayout* top_layout = new QHBoxLayout;
+  top_layout->addWidget(_last_targets_drop_down);
+  top_layout->addWidget(_remove_last_target);
 
   _target_user = new QLineEdit;
   _target_user->setPlaceholderText(tr("User name"));
@@ -53,7 +58,7 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
 
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addWidget(_intro_text);
-  layout->addWidget(_last_targets_drop_down);
+  layout->addLayout(top_layout);
   layout->addWidget(_target_user);
   layout->addWidget(_target_address);
   layout->addWidget(_target_path);
@@ -67,11 +72,12 @@ ChooseTarget::ChooseTarget(std::shared_ptr<utils::Settings>& settings)
   _fields.emplace_back(_target_path);
   _fields.emplace_back(_password_field);
 
-  connect(previous_button, SIGNAL(pressed()),            this, SIGNAL(previousPage()));
-  connect(_start_button,   SIGNAL(pressed()),            this, SLOT(startTransfertPressed()));
-  connect(_target_user,    SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
-  connect(_target_address, SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
-  connect(_password_field, SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
+  connect(previous_button,     SIGNAL(pressed()),            this, SIGNAL(previousPage()));
+  connect(_start_button,       SIGNAL(pressed()),            this, SLOT(startTransfertPressed()));
+  connect(_target_user,        SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
+  connect(_target_address,     SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
+  connect(_password_field,     SIGNAL(textChanged(QString)), this, SLOT(inputUpdated()));
+  connect(_remove_last_target, SIGNAL(pressed()),            this, SLOT(removeCurrentLasttarget()));
 
   connect(_target_user,    SIGNAL(returnPressed()),  this, SLOT(startTransfertPressed()));
   connect(_target_address, SIGNAL(returnPressed()),  this, SLOT(startTransfertPressed()));
@@ -120,7 +126,12 @@ void ChooseTarget::setValueFromLastTarget(QString entry_name)
 {
   auto last_target_it = _last_targets.find(entry_name);
   if(last_target_it == _last_targets.end())
+  {
+    _remove_last_target->setEnabled(false);
     return;
+  }
+
+  _remove_last_target->setEnabled(true);
 
   const LastTarget& last_target = last_target_it->second;
   _target_user->setText(last_target._target_user);
@@ -193,15 +204,28 @@ void ChooseTarget::saveToLastTargets(const QString& target_user, const QString& 
     return;
 
   addLastTarget(target_user, target_address, target_path, speed_limit);
+  saveLastTargets();
+}
 
+void ChooseTarget::removeCurrentLasttarget()
+{
+  _last_targets.erase(_last_targets.find(_last_targets_drop_down->currentText()));
+  _last_targets_drop_down->removeItem( _last_targets_drop_down->currentIndex() );
+  saveLastTargets();
+}
+
+void ChooseTarget::saveLastTargets()
+{
   std::string content;
-  if(!utils::files::read(LAST_TARGET_FILE, content))
-    return;
+  for(auto it : _last_targets)
+  {
+    const LastTarget& last_target = it.second;
+    content += last_target._target_user.toStdString()    + "|"
+             + last_target._target_address.toStdString() + "|"
+             + last_target._target_path.toStdString()    + "|"
+             + std::to_string(last_target._speed_limit) + "\n";
+  }
 
-  content += target_user.toStdString()    + "|"
-           + target_address.toStdString() + "|"
-           + target_path.toStdString()    + "|"
-           + std::to_string(speed_limit) + "\n";
   utils::files::create(LAST_TARGET_FILE, content, true);
 }
 
