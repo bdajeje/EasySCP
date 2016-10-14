@@ -41,10 +41,17 @@ ChooseFile::ChooseFile(std::shared_ptr<utils::Settings>& settings)
 
 void ChooseFile::selectFile()
 {
-  QUrl file_url = QFileDialog::getOpenFileUrl(this, tr("Select a file"), QString{_settings->getLastFileDir().c_str()});
-  if(file_url.isEmpty())
+  QFileDialog dialog {this, tr("Select a file"), QString{_settings->getLastFileDir().c_str()}};
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setOption(QFileDialog::ReadOnly);
+  if(!dialog.exec())
     return;
 
+  const QList<QUrl> files = dialog.selectedUrls();
+  if(files.isEmpty())
+    return;
+
+  const QUrl& file_url = files.first();
   _settings->setLastFileDir(file_url.path());
 
   emit fileSelected(file_url.fileName());
