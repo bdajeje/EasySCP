@@ -12,7 +12,7 @@ MainWindow::MainWindow(const QIcon& icon, QWidget *parent)
   QVBoxLayout* layout = new QVBoxLayout(_central_widget);
 
   // Read settings
-  _settings = std::make_shared<utils::Settings>("./resources/settings");
+  _settings = std::make_shared<utils::Settings>(qApp->applicationDirPath() + "/resources/settings");
 
   // Create system tray icon
   _system_tray_icon = new QSystemTrayIcon(icon, this);

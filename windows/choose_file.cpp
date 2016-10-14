@@ -54,7 +54,7 @@ void ChooseFile::selectFile()
   const QUrl& file_url = files.first();
   _settings->setLastFileDir(file_url.path());
 
-  emit fileSelected(file_url.fileName());
+  emit fileSelected(file_url.toLocalFile());
 }
 
 void ChooseFile::dragEnterEvent(QDragEnterEvent *event)
